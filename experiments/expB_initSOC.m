@@ -109,6 +109,9 @@ subplot(2, 1, 2);
 plot(data.t, err_ekf, 'b-'); hold on;
 plot(data.t, err_cc, 'r--');
 yline(0, 'k:');
+% CC's error sits at exactly -0.2 for the whole record, so without this the
+% line is drawn along the axis frame and is effectively invisible.
+ylim([-0.24, 0.05]);
 xlabel('Time (s)'); ylabel('SOC error (-)');
 legend('EKF error', 'CC error (constant offset)', 'Location', 'best');
 grid on; title('EKF recovers from the wrong initial condition; CC does not');

@@ -36,6 +36,8 @@ docs/           DECISIONS.md is the project's decision log: what was
                 this for the reasoning the report only summarizes.
 report/         report.md / report.pdf - the final write-up.
 figures/        The plots embedded in the report, one per experiment.
+scripts/        crosscheck.py - an independent Python re-implementation of
+                the same equations, used to verify the MATLAB numbers.
 ```
 
 ## Running it
@@ -50,14 +52,22 @@ figures/        The plots embedded in the report, one per experiment.
    real MATLAB/Simulink on 2026-09-18: exact match,
    `max |SOC_simulink - SOC_ekfEstimate| = 0.000e+00`.
 4. All `tests/testXxx.m` files run under MATLAB's `runtests`.
+5. `python scripts/crosscheck.py`, run from the repository root, reproduces
+   every number in the table below without using any of the MATLAB code.
+   Needs numpy and scipy, nothing else.
 
 ## Status
 
 Every number below was produced by running the experiment scripts in
-MATLAB, and independently reproduced by a separate Python implementation
-of the same equations - two implementations, so a transcription error in
-either would show up as a disagreement. Simulink matches
-`src/ekfEstimate.m` exactly.
+MATLAB, and independently reproduced by `scripts/crosscheck.py`, a
+separate Python implementation of the same equations that shares no code
+with the MATLAB pipeline - two implementations, so a transcription error
+in either would show up as a disagreement. Nine of the ten figures agree
+exactly to four decimal places. The tenth, Experiment C's EKF value, is
+the one case that cannot be compared exactly: its voltage-noise draw
+comes from MATLAB's `rng(42)` stream, which numpy does not reproduce
+bit-for-bit, and the two implementations land 0.0005 percentage points
+apart. Simulink matches `src/ekfEstimate.m` exactly.
 
 | Experiment | Condition | EKF RMSE | CC RMSE | More accurate |
 |---|---|---|---|---|
